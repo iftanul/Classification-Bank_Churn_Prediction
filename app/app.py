@@ -5,7 +5,7 @@ import joblib
 import os
 
 # =========================================================================
-# 1. PAGE CONFIG & STYLING
+# 1. PAGE CONFIG & STYLING (DARK MODE)
 # =========================================================================
 st.set_page_config(
     page_title="Bank Churn Prediction", 
@@ -14,21 +14,39 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Custom CSS untuk Dark Mode dan Tombol Hijau
 st.markdown("""
     <style>
-    .stApp { background-color: #f8f9fa; }
-    div[data-testid="stMetricValue"] { color: #1e3a8a; }
-    /* Mempercantik tombol prediksi */
+    /* Mengembalikan background ke mode gelap (Dark Mode) */
+    .stApp { 
+        background-color: #0E1117; 
+        color: #FAFAFA;
+    }
+    
+    /* Warna angka metrik */
+    div[data-testid="stMetricValue"] { 
+        color: #9EE05B; /* Hijau terang */
+    }
+    
+    /* Mempercantik tombol prediksi (Warna hijau persis seperti screenshot) */
     div[data-testid="stFormSubmitButton"] > button {
         width: 100%;
-        background-color: #007bff;
-        color: white;
+        background-color: #9EE05B;
+        color: #1e1e1e;
         font-weight: bold;
         border-radius: 8px;
         padding: 10px;
+        border: none;
+        transition: 0.3s;
     }
     div[data-testid="stFormSubmitButton"] > button:hover {
-        background-color: #0056b3;
+        background-color: #88c94a;
+        color: #1e1e1e;
+    }
+    
+    /* Memastikan teks terbaca dengan baik */
+    h1, h2, h3, h4, h5, h6, p, label {
+        color: #FAFAFA !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -81,7 +99,7 @@ def perform_feature_engineering(df):
 @st.cache_resource
 def load_pipeline():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    # Path sesuai dengan struktur folder kamu yang sudah berhasil
+    # Path sesuai dengan struktur aslimu
     model_path = os.path.join(BASE_DIR, '..', 'models', 'bank_churn_pipeline.pkl')
     try:
         return joblib.load(model_path), "Success"
@@ -166,7 +184,7 @@ with tab1:
             model_success = st.slider("Efektivitas Retensi (%)", 10, 50, 20)
         
         saved_revenue = total_cust * avg_clv * (model_success / 100)
-        st.markdown(f"### 💵 Potential Revenue Saved: <span style='color:#2e7d32'>${saved_revenue:,.0f}</span>", unsafe_allow_html=True)
+        st.markdown(f"### 💵 Potential Revenue Saved: <span style='color:#9EE05B'>${saved_revenue:,.0f}</span>", unsafe_allow_html=True)
 
 # -------------------------------------------------------------------------
 # TAB 2: EDA & INSIGHTS
@@ -185,7 +203,7 @@ with tab2:
             'Feature': ['Total Trans Count', 'Trans Ct Change Q4-Q1', 'Total Revolving Bal', 'Contacts 12mon', 'Gender', 'Income', 'Education'],
             'Predictive Power': [0.85, 0.78, 0.70, 0.60, 0.15, 0.12, 0.05]
         }).sort_values('Predictive Power', ascending=True)
-        st.bar_chart(eda_importance.set_index('Feature'), color='#3b82f6')
+        st.bar_chart(eda_importance.set_index('Feature'), color='#9EE05B')
 
     st.divider()
 
@@ -194,7 +212,7 @@ with tab2:
     with c_sig1:
         st.markdown("#### 📉 Declining Activity")
         st.write("Nasabah Churn memiliki Total Transaksi jauh lebih rendah dibanding nasabah loyal.")
-        st.bar_chart(pd.DataFrame({'Loyal': [70], 'Churn': [35]}).T, color=['#10b981'])
+        st.bar_chart(pd.DataFrame({'Loyal': [70], 'Churn': [35]}).T, color=['#9EE05B'])
     with c_sig2:
         st.markdown("#### 💳 Low Credit Utilization")
         st.write("Nasabah Churn memiliki saldo berjalan sangat rendah (Minim penggunaan produk).")
